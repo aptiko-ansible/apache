@@ -148,10 +148,6 @@
     backrefs=yes
     regexp='^AWSTATS_ENABLE_BUILDSTATICPAGES="yes"'
     line='AWSTATS_ENABLE_BUILDSTATICPAGES="no"'
-- name: Backup awstats
-  copy:
-    content: "--include=/var/lib/awstats\n"
-    dest: /etc/duplicity/includes_excludes/awstats
 - name: Install acl
   apt: name=acl
 - name: Allow www-data group to read /var/log/apache2 (required by awstats)
