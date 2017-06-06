@@ -13,7 +13,7 @@
   register: check_var_log_nginx
   ignore_errors: True
   changed_when: False
-  always_run: True
+  check_mode: no
 - name: Move /var/log/nginx to /var/log/apache2
   shell: >
     mv /var/log/nginx /var/log/apache2 &&
@@ -98,7 +98,7 @@
   register: check_custom_conf
   ignore_errors: True
   changed_when: False
-  always_run: True
+  check_mode: no
 - name: Enable custom configuration
   command: a2enconf custom
   when: "check_custom_conf.rc != 0"
@@ -115,7 +115,7 @@
   register: check_other_vhosts_access_log
   ignore_errors: True
   changed_when: False
-  always_run: True
+  check_mode: no
 - name: Disable other-vhosts-access-log
   command: a2disconf other-vhosts-access-log
   when: "check_other_vhosts_access_log.rc == 0"
