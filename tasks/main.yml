@@ -24,6 +24,12 @@
 - name: Install apache
   apt: name=apache2
 
+- name: Install certbot
+  apt: name=certbot
+
+- name: Install certbot apache plugin
+  apt: name=python-certbot-apache
+
 # Remove CGI stuff installed by nginx role
 - name: Uninstall fcgiwrap
   apt: state=absent name=fcgiwrap
