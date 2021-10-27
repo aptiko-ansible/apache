@@ -1,9 +1,20 @@
 ---
 # Remove nginx stuff
-- name: Uninstall nginx
-  apt: state=absent name=nginx
+- name: Uninstall nginx apt packages
+  apt:
+    state: absent
+    name:
+    - nginx
+    - fcgiwrap
 - name: Remove /etc/nginx
   file: state=absent path=/etc/nginx
+- name: Remove /etc/default/fcgiwrap
+  file: state=absent dest=/etc/default/fcgiwrap
+- name: Remove user fcgiwrap
+  user: state=absent name=fcgiwrap
+- name: Remove group fcgiwrap
+  group: state=absent name=fcgiwrap
+
 
 # Does a /var/log/nginx directory exist? If yes, move it to /var/log/apache2,
 # so that apache will pick up where nginx left off and awstats won't have a
@@ -21,24 +32,14 @@
     chmod -R u=rwX,g=rX,o= /var/log/apache2
   when: "check_var_log_nginx.rc == 0"
 
-- name: Install apache
-  apt: name=apache2
-
-- name: Install certbot
-  apt: name=certbot
-
-- name: Install certbot apache plugin
-  apt: name=python3-certbot-apache
-
-# Remove CGI stuff installed by nginx role
-- name: Uninstall fcgiwrap
-  apt: state=absent name=fcgiwrap
-- name: Remove /etc/default/fcgiwrap
-  file: state=absent dest=/etc/default/fcgiwrap
-- name: Remove user fcgiwrap
-  user: state=absent name=fcgiwrap
-- name: Remove group fcgiwrap
-  group: state=absent name=fcgiwrap
+- name: Install apt packages for apache
+  apt:
+    name:
+    - apache2
+    - certbot
+    - python3-certbot-apache
+    - awstats
+    - acl
 
 - name: Apache default site
   template:
@@ -145,8 +146,6 @@
   notify: Reload ferm
 
 # Awstats
-- name: Install awstats
-  apt: name=awstats
 - name: Awstats global configuration file
   copy: src=awstats.conf.local dest=/etc/awstats/awstats.conf.local
 - name: Disable awstats static pages
@@ -155,8 +154,6 @@
     backrefs=yes
     regexp='^AWSTATS_ENABLE_BUILDSTATICPAGES="yes"'
     line='AWSTATS_ENABLE_BUILDSTATICPAGES="no"'
-- name: Install acl
-  apt: name=acl
 - name: Allow www-data group to read /var/log/apache2 (required by awstats)
   acl:
     name: /var/log/apache2
