@@ -151,16 +151,19 @@
     path: /etc/ferm/ansible-late
     line: "proto tcp dport (http https) ACCEPT;"
   notify: Reload ferm
+  when: use_ferm
 
 # Awstats
 - name: Awstats global configuration file
   copy: src=awstats.conf.local dest=/etc/awstats/awstats.conf.local
+  when: use_awstats
 - name: Disable awstats static pages
   lineinfile: >
     dest=/etc/default/awstats
     backrefs=yes
     regexp='^AWSTATS_ENABLE_BUILDSTATICPAGES="yes"'
     line='AWSTATS_ENABLE_BUILDSTATICPAGES="no"'
+  when: use_awstats
 - name: Allow www-data group to read /var/log/apache2 (required by awstats)
   acl:
     name: /var/log/apache2
@@ -168,12 +171,15 @@
     etype: group
     entity: www-data
     permissions: rx
+  when: use_awstats
 - name: Allow all to read new files in /var/log/apache2 (required by awstats)
   lineinfile:
     dest: /etc/logrotate.d/apache2
     line: "\tcreate 644 root adm"
     regexp: '^\s*create '
+  when: use_awstats
 - name: Allow all to read /var/log/apache2/access.log (required by awstats)
   file:
     path: /var/log/apache2/access.log
     mode: 0644
+  when: use_awstats

@@ -6,21 +6,34 @@ Overview
 ========
 
 This is an Ansible role for installing apache on Debian. It also
-installs awstats.
+optionally installs awstats.
 
 It performs some essential configuration such as enabling several
 apache modules, marking 301 redirections as non-cacheable, and changing
 the default log format. Other than that, it doesn't do much and should
 be combined with ``apache-vhost``.
 
+Options
+=======
+
+- ``use_ferm``: If ``true``, it drops a configuration snippet in
+  ``/etc/ferm/ansible-late`` in order to allow connections to ports 80
+  and 443.  In this case you must also use ansible_ferm_. The default is
+  ``true`` for backwards compatibility reasons.
+- ``use_awstats``: If ``true``, it installs and configures awstats. The
+  default is ``true`` for backwards compatibility reasons.
+
+.. _ansible_ferm: https://github.com/aptiko-ansible/ferm
+
 Meta
 ====
 
 Written by Antonis Christofides
 
+| Copyright (C) 2021 GRNET
 | Copyright (C) 2011-2015 Antonis Christofides
-| Copyright (C) 2014 TEI of Epirus
-| Copyright (C) 2015 National Technical University of Athens
+| Copyright (C) 2014-2021 TEI of Epirus
+| Copyright (C) 2015-2021 National Technical University of Athens
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
