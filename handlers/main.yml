@@ -1,9 +1,12 @@
 ---
 - name: Restart apache
+  become: yes
   service: name=apache2 state=restarted
 
 - name: Reload apache
+  become: yes
   service: name=apache2 state=reloaded
 
 - name: Reload ferm
+  become: yes
   service: name=ferm state=reloaded
