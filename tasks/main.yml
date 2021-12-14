@@ -45,8 +45,14 @@
     - apache2
     - certbot
     - python3-certbot-apache
-    - awstats
     - acl
+
+- name: Install awstats
+  become: yes
+  apt:
+    name:
+    - awstats
+  when: use_awstats
 
 - name: Apache default site
   become: yes
